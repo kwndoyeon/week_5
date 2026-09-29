@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>인간챗바퀴 </title>
+	<link rel="icon" type="image/png" href="popo2.jpg">
+</head>
+<body>
+
+<style>
+    @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Pretendard", sans-serif;
+      font-weight: 600;
+      background: white;
+    }
+
+    .page {
+      min-height: 100vh;
+    }
+
+
+    .cover {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      cursor: pointer;
+      --radius: 350px;
+    }
+
+   
+    .ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      animation: spin 10s linear infinite;
+    }
+
+    .ring span {
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-size: clamp(120px, 5vw, 160px);
+      font-weight: 700;
+      white-space: pre;
+      transform:
+        translate(-50%, -50%)
+        rotate(var(--angle))
+        translateY(calc(0px - var(--radius)));
+    }
+
+    
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+   
+    .center-dot {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: black;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+  
+    .image-page {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: white;
+      overflow: hidden;
+    }
+
+    .image-page img {
+      display: block;
+      max-width: 100%;
+      max-height: 100vh;
+      object-fit: contain;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+
+
+    #nextPage {
+  cursor: pointer;
+}
+
+#taskEntryPage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 500px;
+  overflow: hidden;
+  background: white;
+}
+
+#taskEntryRing {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+#taskEntryRing span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: "Pretendard", sans-serif;
+  font-size: var(--font-size);
+  font-weight: 600;
+  white-space: pre;
+  transform:
+    translate(-50%, -50%)
+    rotate(var(--angle))
+    translateY(calc(0px - var(--radius)));
+}
+
+.task-controls {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  gap: 8px;
+  transform: translate(-50%, -50%);
+}
+
+.task-controls input {
+  width: min(270px, 58vw);
+  padding: 8px;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 600;
+}
+
+.task-controls button {
+  padding: 4px 12px;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+
+#taskEntryPage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 500px;
+  overflow: hidden;
+  background: white;
+}
+
+#innerBackgroundCircle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 0;
+  border-radius: 50%;
+  background: #ffffff;
+  transform: translate(-50%, -50%);
+  width: 200px;  
+  height: 200px; 
+}
+
+#taskEntryRing {
+  z-index: 1;
+}
+
+.task-controls {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 4;
+  display: flex;
+  gap: 8px;
+  transform: translate(-50%, -50%);
+}
+
+.task-controls input {
+  width: min(270px, 58vw);
+  padding: 8px;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 600;
+}
+
+.task-controls button {
+  padding: 6px 12px;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* 빨간 원을 중심으로 도는 캐릭터 */
+#runnerOrbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 3;
+  width: 0;
+  height: 0;
+}
+
+#runnerPosition {
+  position: absolute;
+  top: 170px;
+  left: 0;
+  display: flex;
+  width: 270px;
+  height: 285px;
+  justify-content: center;
+  align-items: center;
+  transform: translate(-50%, -50%);
+}
+
+#runnerImage {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+#runnerOrbit.running {
+  animation: runnerClockwise var(--runner-duration, 8s) steps(8, end) infinite;
+}
+
+#runnerOrbit.paused {
+  animation-play-state: paused;
+}
+
+@keyframes runnerClockwise {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 가운데 빨간 원 */
+#timerStart {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 5;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: red;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+#timerStart.urgent {
+  animation: timerBlink var(--blink-speed, 1s) infinite;
+}
+
+@keyframes timerBlink {
+  50% {
+    opacity: 0.15;
+  }
+}
+
+/* 우측 상단 설정 박스 */
+#settingBoxes {
+  position: absolute;
+  top: 20px;
+  right: 60px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.setting-box {
+  min-width: 170px;
+  padding: 10px;
+  border: 1px solid #222;
+  background: white;
+}
+
+.box-title {
+  margin-bottom: 5px;
+  font-size: 13px;
+}
+
+#timerDisplay {
+  margin-bottom: 8px;
+  font-size: 26px;
+  text-align: center;
+}
+
+.time-setting {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 13px;
+}
+
+.time-setting input {
+  width: 48px;
+  padding: 4px;
+  font-family: inherit;
+  text-align: center;
+}
+
+.color-setting {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.color-setting label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 12px;
+}
+
+.color-setting input {
+  width: 60px;
+  height: 28px;
+  padding: 1px;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  #settingBoxes {
+    top: 10px;
+    right: 10px;
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+
+#settingBoxes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+}
+
+#settingBoxes > .setting-box {
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+#timerDisplay {
+  width: fit-content;
+  margin: 0;
+  padding: 7px 14px;
+  border: 2px solid #222;
+  background: white;
+  font-size: 56px;
+  line-height: 1;
+  text-align: center;
+  cursor: pointer;
+}
+
+.time-setting {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.time-setting input {
+  width: 55px;
+  padding: 5px;
+  text-align: center;
+}
+
+#saveTimeButton {
+  padding: 5px 9px;
+  cursor: pointer;
+}
+
+.color-setting {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 14px;
+}
+
+.color-setting input[type="color"] {
+  width: 83px;
+  height: 48px;
+  padding: 3px;
+  border: 1px solid #888;
+  background: white;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media (max-width: 600px) {
+  #settingBoxes {
+    top: 10px;
+    right: 10px;
+    gap: 32px;
+  }
+
+  #timerDisplay {
+    font-size: 42px;
+  }
+
+  .color-setting input[type="color"] {
+    width: 90px;
+    height: 40px;
+  }
+}
+
+#taskEntryPage {
+  position: relative;
+  isolation: isolate;
+}
+
+#taskEntryPage::before {
+  content: "";
+  position: absolute;
+  width: var(--outer-circle-size, min(96vmin, 1155px));
+height: var(--outer-circle-size, min(96vmin, 1155px));
+  aspect-ratio: 1;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background-color: #ffffff;
+  z-index: -1;
+  pointer-events: none;
+}
+
+#textSizeControl {
+  position: absolute;
+  right: 0px;
+  bottom: -650px;
+  width: 182px;
+  z-index: 20;
+}
+
+#textSizeSlider {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+#movementSpeedSlider {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 16px;
+  cursor: pointer;
+}
+
+.guide-hint {
+  position: fixed;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  background: white;
+  color: #222;
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translateY(-50%);
+  animation: guideBlink 0.7s infinite alternate;
+}
+
+.guide-hint.show {
+  display: flex;
+}
+
+/* 문구 왼쪽의 삼각형 */
+.guide-hint::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 10px solid #ff4b4b;
+}
+
+@keyframes guideBlink {
+  from {
+    opacity: 0.25;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+#timerGuideHint {
+  flex-direction: row-reverse;
+}
+
+#timerGuideHint::before {
+  transform: rotate(180deg);
+}
+
+#runnerImage {
+  scale: var(--character-scale, 1);
+  transform-origin: 50% 0%;
+}
+
+#timerStart.time-ready {
+  animation: timeReadyBlink 0.7s infinite alternate;
+}
+
+@keyframes timeReadyBlink {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+  </style>
+</head>
+
+<body>
+ 
+  <section class="page cover" id="cover">
+    <div class="ring" id="ring"></div>
+    <div class="center-dot"></div>
+  </section>
+
+
+  <section class="page image-page hidden" id="nextPage">
+    <img src="manual.png" alt="다음 페이지">
+  </section>
+
+
+<section class="page hidden" id="taskEntryPage">
+ 
+  <div id="innerBackgroundCircle" class="hidden"></div>
+
+  
+  <div id="taskEntryRing"></div>
+
+
+  <div class="task-controls">
+    <input type="text" id="text" placeholder="해야 할 일 작성">
+    <button type="button" id="ok">확인</button>
+  </div>
+
+ 
+  <div id="runnerOrbit" class="hidden">
+    <div id="runnerPosition">
+      <img id="runnerImage" src="hamster.png" alt="햄스">
+    </div>
+  </div>
+
+  <button
+    id="timerStart"
+    class="hidden"
+    type="button"
+    aria-label="타이머 시작"
+  ></button>
+
+
+  <div id="settingBoxes" class="hidden">
+  <div class="setting-box">
+    <div id="timerDisplay" title="눌러서 시간 설정">00:00</div>
+
+    <div id="timeSetting" class="time-setting hidden">
+      <input type="number" id="minutesInput" min="0" value="0">
+      <span>:</span>
+      <input type="number" id="secondsInput" min="0" max="59" value="0">
+      <button type="button" id="saveTimeButton">확인</button>
+    </div>
+  </div>
+
+  <div class="setting-box color-setting">
+    <input type="color" id="innerColor" value="#ffffff" aria-label="내부 색상">
+    <input type="color" id="outerColor" value="#ffffff" aria-label="가운데 원 색상">
+  </div>
+  <div id="textSizeControl" class="hidden">
+  <input
+    type="range"
+    id="textSizeSlider"
+    min="0"
+    max="100"
+    value="50"
+    aria-label="원형 글씨 크기"
+  >
+  <input
+  type="range"
+  id="movementSpeedSlider"
+  min="1"
+  max="4"
+  step="1"
+  value="1"
+  aria-label="캐릭터와 타이머 속도"
+/>
+
+</div>
+</div>
+</section>
+<div id="characterGuideHint" class="guide-hint">캐릭터 변경</div>
+<div id="timerGuideHint" class="guide-hint">시간 설정</div>
+<div id="startGuideHint" class="guide-hint">시작 버튼</div>
+
+  <script>
+    
+    const phrase = "인간챗바퀴" ;
+
+    
+    const characters = Array.from(phrase.repeat(2));
+    const ring = document.getElementById("ring");
+
+    characters.forEach((character, index) => {
+      const letter = document.createElement("span");
+      const angle = (360 / characters.length) * index;
+
+      letter.textContent = character;
+      letter.style.setProperty("--angle", angle + "deg");
+
+      ring.appendChild(letter);
+    });
+
+   
+ document.getElementById("cover").addEventListener("click", () => {
+  document.getElementById("cover").classList.add("hidden");
+  document.getElementById("taskEntryPage").classList.remove("hidden");
+});
+
+    const manualPageForInput = document.getElementById("nextPage");
+const taskEntryPage = document.getElementById("taskEntryPage");
+const taskTextInput = document.getElementById("text");
+const taskEntryRing = document.getElementById("taskEntryRing");
+
+
+
+function updateTaskRing(text, fontSize = 130, fontWeight = 600) {
+  taskEntryRing.innerHTML = "";
+
+  const phrase = text.trim();
+  if (phrase === "") return;
+
+  const innerRadius = Math.min(window.innerWidth, window.innerHeight) * 0.33;
+  const radius = innerRadius + fontSize * 0.55;
+
+  const repeatedPhrase = phrase + " ";
+  const phraseLetters = Array.from(repeatedPhrase);
+
+  const targetCount = Math.ceil((2 * Math.PI * radius) / fontSize);
+  const repeatCount = Math.max(
+    1,
+    Math.ceil(targetCount / phraseLetters.length)
+  );
+
+  const letters = Array.from(repeatedPhrase.repeat(repeatCount));
+
+  taskEntryRing.style.setProperty("--radius", radius + "px");
+  taskEntryRing.style.setProperty("--font-size", fontSize + "px");
+
+  letters.forEach((letter, index) => {
+    const span = document.createElement("span");
+    const angle = (360 / letters.length) * index;
+
+    span.textContent = letter;
+    span.style.setProperty("--angle", angle + "deg");
+    span.style.fontWeight = fontWeight;
+
+    taskEntryRing.appendChild(span);
+  });
+}
+
+taskTextInput.addEventListener("input", () => {
+  updateTaskRing(taskTextInput.value);
+});
+
+const confirmInputButton = document.getElementById("ok");
+const taskInputControls = document.querySelector("#taskEntryPage .task-controls");
+const innerBackgroundCircle = document.getElementById("innerBackgroundCircle");
+const runnerOrbit = document.getElementById("runnerOrbit");
+const movementSpeedSlider =
+  document.getElementById("movementSpeedSlider");
+let movementSpeed = Number(movementSpeedSlider.value) || 1;
+
+movementSpeedSlider.addEventListener("input", () => {
+  movementSpeed = Number(movementSpeedSlider.value);
+  runnerOrbit.style.setProperty(
+    "--runner-duration",
+    `${8 / movementSpeed}s`
+  );
+});
+const timerStartButton = document.getElementById("timerStart");
+const settingBoxes = document.getElementById("settingBoxes");
+
+
+confirmInputButton.addEventListener("click", () => {
+  const enteredText = document.getElementById("text").value.trim();
+
+  if (enteredText === "") {
+    document.getElementById("text").focus();
+    return;
+  }
+
+  taskInputControls.classList.add("hidden");
+  innerBackgroundCircle.classList.remove("hidden");
+  runnerOrbit.classList.remove("hidden");
+  timerStartButton.classList.remove("hidden");
+  settingBoxes.classList.remove("hidden");
+
+  const innerRadius = Math.min(
+    window.innerWidth,
+    window.innerHeight
+  ) * 0.33;
+
+  innerBackgroundCircle.style.width = innerRadius * 2 + "px";
+  innerBackgroundCircle.style.height = innerRadius * 2 + "px";
+
+  updateTimerDisplay();
+});
+
+
+const minutesInput = document.getElementById("minutesInput");
+const secondsInput = document.getElementById("secondsInput");
+const timerDisplay = document.getElementById("timerDisplay");
+
+let remainingSeconds = 0;
+let countdownInterval = null;
+
+function formatTimer(seconds) {
+  const minutes = Math.floor(seconds / 60);
+  const leftSeconds = seconds % 60;
+
+  return (
+    String(minutes).padStart(2, "0") +
+    ":" +
+    String(leftSeconds).padStart(2, "0")
+  );
+}
+
+function updateTimerDisplay() {
+  const minutes = Math.max(0, Number(minutesInput.value) || 0);
+  const seconds = Math.min(
+    59,
+    Math.max(0, Number(secondsInput.value) || 0)
+  );
+
+  secondsInput.value = seconds;
+  remainingSeconds = minutes * 60 + seconds;
+  timerDisplay.textContent = formatTimer(remainingSeconds);
+}
+
+minutesInput.addEventListener("input", updateTimerDisplay);
+secondsInput.addEventListener("input", updateTimerDisplay);
+
+
+timerStartButton.addEventListener("click", () => {
+  const isResume = runnerOrbit.classList.contains("paused");
+
+ if (countdownInterval !== null) {
+  clearInterval(countdownInterval);
+  countdownInterval = null;
+  runnerOrbit.classList.add("paused");
+  timerStartButton.classList.remove("urgent");
+  return;
+}
+
+runnerOrbit.classList.remove("paused");
+
+  if (!isResume) {
+  updateTimerDisplay();
+}
+
+  if (remainingSeconds <= 0) {
+    alert("작업 시간을 설정해줘!");
+    return;
+  }
+
+  minutesInput.disabled = true;
+  secondsInput.disabled = true;
+  runnerOrbit.classList.add("running");
+
+  countdownInterval = setInterval(() => {
+    remainingSeconds = Math.max(0, remainingSeconds - movementSpeed);
+    timerDisplay.textContent = formatTimer(remainingSeconds);
+
+    if (remainingSeconds > 0 && remainingSeconds <= 30) {
+      const blinkSpeed = Math.max(0.18, remainingSeconds / 30);
+
+      timerStartButton.style.setProperty(
+        "--blink-speed",
+        blinkSpeed + "s"
+      );
+      timerStartButton.classList.add("urgent");
+    }
+
+    if (remainingSeconds === 0) {
+      clearInterval(countdownInterval);
+      countdownInterval = null;
+      runnerOrbit.classList.remove("running", "paused");
+      timerStartButton.classList.remove("urgent");
+      timerStartButton.disabled = true;
+    }
+  }, 1000);
+});
+minutesInput.addEventListener("input", () => {
+  timerStartButton.classList.add("time-ready");
+});
+
+secondsInput.addEventListener("input", () => {
+  timerStartButton.classList.add("time-ready");
+});
+
+
+document.getElementById("innerColor").addEventListener("input", (event) => {
+  innerBackgroundCircle.style.backgroundColor = event.target.value;
+});
+
+
+document.getElementById("outerColor").addEventListener("input", (event) => {
+  document.getElementById("taskEntryPage").style.backgroundColor =
+    event.target.value;
+});
+
+
+const characterImages = [
+  { src: "hamster.png", alt: "햄스터" },
+  { src: "worker.png", alt: "직장인" },
+  { src: "student.png", alt: "학생" },
+  { src: "person.png", alt: "사람" }
+];
+
+let currentCharacter = 0;
+
+document.getElementById("runnerImage").addEventListener("click", () => {
+  currentCharacter = (currentCharacter + 1) % characterImages.length;
+
+  const image = document.getElementById("runnerImage");
+  image.src = characterImages[currentCharacter].src;
+  image.alt = characterImages[currentCharacter].alt;
+});
+
+(() => {
+  const display = document.getElementById("timerDisplay");
+  const editor = document.getElementById("timeSetting");
+  const minutes = document.getElementById("minutesInput");
+  const seconds = document.getElementById("secondsInput");
+  const saveButton = document.getElementById("saveTimeButton");
+
+  display.addEventListener("click", () => {
+    display.classList.add("hidden");
+    editor.classList.remove("hidden");
+    minutes.focus();
+  });
+
+  saveButton.addEventListener("click", () => {
+    minutes.value = Math.max(0, parseInt(minutes.value, 10) || 0);
+    seconds.value = Math.min(59, Math.max(0, parseInt(seconds.value, 10) || 0));
+
+    updateTimerDisplay();
+
+    editor.classList.add("hidden");
+    display.classList.remove("hidden");
+  });
+})();
+
+(() => {
+  const slider = document.getElementById("textSizeSlider");
+  const ring = document.getElementById("taskEntryRing");
+  const innerCircle = document.getElementById("innerBackgroundCircle");
+  const page = document.getElementById("taskEntryPage");
+
+  let baseSize;
+  let baseWeight;
+  let baseOuterCircleSize;
+
+  slider.addEventListener("input", () => {
+    const letters = ring.querySelectorAll("span");
+    if (letters.length === 0) return;
+
+    if (baseSize === undefined) {
+      const style = getComputedStyle(letters[0]);
+      baseSize = parseFloat(style.fontSize);
+      baseWeight = parseInt(style.fontWeight, 10) || 600;
+      baseOuterCircleSize =
+  parseFloat(getComputedStyle(page, "::before").width) ||
+  Math.min(Math.min(window.innerWidth, window.innerHeight) * 1, 1155);
+    }
+
+    const position = Number(slider.value) / 100;
+    const runner = document.getElementById("runnerImage");
+runner.style.scale = 0.8 + position * 0.8;
+runner.style.transformOrigin = "50% 0%";
+    const minSize = baseSize * 0.2;
+    const maxSize = baseSize * 10;
+
+  
+
+    let size;
+    let weight;
+
+    if (position <= 0.5) {
+      const amount = position / 0.5;
+      size = minSize + (baseSize - minSize) * amount;
+      weight = 300 + (baseWeight - 300) * amount;
+    } else {
+      const amount = (position - 0.5) / 0.5;
+      size = baseSize + (maxSize - baseSize) * amount;
+      weight = baseWeight + (800 - baseWeight) * amount;
+    }
+
+   const innerCircleSize =
+  innerCircle.getBoundingClientRect().width || 180;
+const minOuterCircleSize = innerCircleSize + 48;
+
+let outerCircleSize;
+
+if (position <= 0.5) {
+  const circleAmount = position / 0.5;
+  outerCircleSize =
+    minOuterCircleSize +
+    (baseOuterCircleSize - minOuterCircleSize) * circleAmount;
+} else {
+  const circleAmount = (position - 0.5) / 0.5;
+  outerCircleSize =
+    baseOuterCircleSize +
+    baseOuterCircleSize * 9 * circleAmount;
+}
+
+page.style.setProperty("--outer-circle-size", `${outerCircleSize}px`);
+
+    const taskText = document.getElementById("text").value;
+updateTaskRing(taskText, size, Math.round(weight));
+  });
+})();
+document.getElementById("ok").addEventListener("click", function () {
+  document.getElementById("textSizeControl").classList.remove("hidden");
+});
+const characterGuideHint = document.getElementById("characterGuideHint");
+const timerGuideHint = document.getElementById("timerGuideHint");
+const startGuideHint = document.getElementById("startGuideHint");
+const guideRunnerImage = document.getElementById("runnerImage");
+const guideOkButton = document.getElementById("ok");
+
+function placeGuideHint(hint, target) {
+  const rect = target.getBoundingClientRect();
+
+  const left = Math.max(
+    8,
+    Math.min(rect.right - 10, window.innerWidth - hint.offsetWidth - 8)
+  );
+
+  hint.style.left = `${left}px`;
+  hint.style.top = `${rect.top + rect.height / 2 - 30 }px`;
+}
+function placeTimerGuideHint(hint, target) {
+  const rect = target.getBoundingClientRect();
+  const left = Math.max(8, rect.left - hint.offsetWidth - 12);
+
+  hint.style.left = `${left}px`;
+  hint.style.top = `${rect.top + rect.height / 2}px`;
+}
+function placeStartGuideHint(hint, target) {
+  const rect = target.getBoundingClientRect();
+
+  const left = Math.min(
+    window.innerWidth - hint.offsetWidth - 8,
+    rect.right + 12
+  );
+
+  hint.style.left = `${Math.max(8, left)}px`;
+  hint.style.top = `${rect.top + rect.height / 2 - hint.offsetHeight / 2 + 17 }px`;
+}
+function updateGuidePositions() {
+  if (characterGuideHint.classList.contains("show")) {
+    placeGuideHint(characterGuideHint, guideRunnerImage);
+  }
+
+  if (timerGuideHint.classList.contains("show")) {
+    placeTimerGuideHint(timerGuideHint, timerDisplay);
+  }
+
+  if (
+  characterGuideHint.classList.contains("show") ||
+  timerGuideHint.classList.contains("show") ||
+  startGuideHint.classList.contains("show")
+) {
+    requestAnimationFrame(updateGuidePositions);
+  }
+  if (startGuideHint.classList.contains("show")) {
+  placeStartGuideHint(startGuideHint, timerStartButton);
+}
+}
+
+guideOkButton.addEventListener("click", () => {
+  if (!guideRunnerImage.getClientRects().length) return;
+
+  characterGuideHint.classList.add("show");
+  timerGuideHint.classList.add("show");
+  startGuideHint.classList.add("show");
+  updateGuidePositions();
+});
+
+
+guideRunnerImage.addEventListener("click", () => {
+  characterGuideHint.classList.remove("show");
+});
+
+
+[timerDisplay, minutesInput, secondsInput].forEach((item) => {
+  item.addEventListener("click", () => {
+    timerGuideHint.classList.remove("show");
+  });
+ 
+timerStartButton.addEventListener("click", () => {
+  startGuideHint.classList.remove("show");
+});
+});
+  </script>
+</body>
+</html>
